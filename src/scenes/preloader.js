@@ -28,7 +28,8 @@ export class Preloader extends Phaser.Scene {
         this.load.setPath('public/assets');
         this.load.image('ball', 'ball.png');
         this.load.image('pad', 'pad.png');
-        this.load.image('back', 'fondo.jpg');
+        this.load.image('back', 'fondo.png');
+        this.load.spritesheet('collide', 'CrashSpriteSheet.png', { frameWidth: 625, frameHeight: 468.75 });
     }
 
     create ()

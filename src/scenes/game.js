@@ -1,5 +1,5 @@
 // Useful vars
-let width, height, mContext;
+let width, height, mContext, colliders = [], collide;
 
 let ball, pad1, pad2, limits = [];
 
@@ -31,8 +31,8 @@ export class Game extends Phaser.Scene {
             );
         });
 
-        this.physics.add.collider(ball, pad1);
-        this.physics.add.collider(ball, pad2);
+        this.physics.add.collider(ball, pad1, newCollision);
+        this.physics.add.collider(ball, pad2, newCollision);
         this.physics.add.collider(ball, limits, goal);
 
         function goal (ball, limit){
@@ -46,12 +46,24 @@ export class Game extends Phaser.Scene {
                 ball.body.enable = true;
             }, 800);
         }
-    }
+
+        function newCollision (ball){
+            colliders.push(collide = mContext.add.sprite(ball.x, ball.y, 'collide', 0).setScale(.5));
+            collide.anims.play('collide');
+
+            setTimeout(() => {
+                if(colliders.length > 1){
+                    colliders[0].destroy();
+                    colliders.shift();
+                }
+            }, 1000);
+        }
+    } 
 
     _init(){
         width = this.game.config.width;
         height = this.game.config.height;
-        this.add.image(width/2, height/2, 'back').setScale(.71);
+        this.add.image(width/2, height/2, 'back').setScale(1.16, .94);
 
         ball = this.physics.add.sprite((width/2), (height/2), 'ball')
                 .setScale(.8)
@@ -86,6 +98,13 @@ export class Game extends Phaser.Scene {
             limit.score = 0;
             this.physics.add.existing(limit, true);
             limit.setAlpha(0);
+        });
+
+        this.anims.create({
+            key: 'collide',
+            frames: this.anims.generateFrameNumbers('collide', { start: 0, end: 15 }),
+            frameRate: 60,
+            repeat: 0
         });
     }
 
