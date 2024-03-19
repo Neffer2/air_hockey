@@ -73,10 +73,10 @@ export class Game extends Phaser.Scene {
                 }
                 else{
                     // La pelota golpea el centro del sprite
-                    ball.setVelocityX(2 + Math.random() * 8);
+                    ball.setVelocityY(50 + Math.random() * 8);
                 }
 
-                setTimeout(() => enabelColition = !enabelColition, 100);
+                setTimeout(() => enabelColition = !enabelColition, 500);
             }        
         }
     } 
@@ -99,7 +99,7 @@ export class Game extends Phaser.Scene {
                 .setName("Pad1")
                 .setCircle(93.5)
                 .setImmovable(true)
-                .setVelocity(this.getRandomInt(-10, 10))
+                // .setVelocity(this.getRandomInt(-10, 10))
                 .setInteractive()
                 .setCollideWorldBounds(true);
 
@@ -108,7 +108,7 @@ export class Game extends Phaser.Scene {
                 .setName("Pad2")
                 .setCircle(93.5)
                 .setImmovable(true)
-                .setVelocity(this.getRandomInt(-10, 10))
+                // .setVelocity(this.getRandomInt(-10, 10))
                 .setInteractive()
                 .setCollideWorldBounds(true);
 
