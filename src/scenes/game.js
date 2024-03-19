@@ -1,5 +1,5 @@
 // Useful vars
-let width, height, mContext, enabelColition = true;
+let width, height, mContext, enabelColition = true, minVelocity = 700;
 
 let ball, pad1, pad2, limits = [];
 
@@ -73,13 +73,21 @@ export class Game extends Phaser.Scene {
                 }
                 else{
                     // La pelota golpea el centro del sprite
-                    ball.setVelocityY(50 + Math.random() * 8);
+                    ball.setVelocity(50 + Math.random() * 8);
                 }
 
                 setTimeout(() => enabelColition = !enabelColition, 500);
             }        
         }
     } 
+
+    update(){
+        if ((ball.body.velocity.y > 0) && ball.body.velocity.y < minVelocity){
+            ball.setVelocityY(minVelocity);
+        }else if ((ball.body.velocity.y < 0) && (ball.body.velocity.y * -1) < minVelocity){
+            ball.setVelocity(-minVelocity);
+        }
+    }
 
     _init(){
         width = this.game.config.width;
@@ -99,7 +107,6 @@ export class Game extends Phaser.Scene {
                 .setName("Pad1")
                 .setCircle(93.5)
                 .setImmovable(true)
-                // .setVelocity(this.getRandomInt(-10, 10))
                 .setInteractive()
                 .setCollideWorldBounds(true);
 
@@ -108,7 +115,6 @@ export class Game extends Phaser.Scene {
                 .setName("Pad2")
                 .setCircle(93.5)
                 .setImmovable(true)
-                // .setVelocity(this.getRandomInt(-10, 10))
                 .setInteractive()
                 .setCollideWorldBounds(true);
 
