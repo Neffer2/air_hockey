@@ -1,7 +1,7 @@
 // Useful vars
 let width, height, mContext, enabelColition = true, minVelocity = 900;
 
-let ball, pad1, pad2, limits = [];
+let ball, pad1, pad2, limits = [], fullScreen;
 
 export class Game extends Phaser.Scene {
     constructor ()
@@ -15,7 +15,7 @@ export class Game extends Phaser.Scene {
         this.physics.world.setFPS(120);
 
         /* FULLSCREEN */
-        ball.setInteractive().on('pointerdown', function() {
+        fullScreen.setInteractive().on('pointerdown', function() {
             if (mContext.scale.isFullscreen) {
                 mContext.scale.stopFullscreen();
                 // On stop fulll screen
@@ -105,11 +105,12 @@ export class Game extends Phaser.Scene {
         height = this.game.config.height;
         this.add.image(width/2, height/2, 'back').setScale(1.16, .94);
 
+        fullScreen = this.add.image(50, 50, 'fullScreen').setScale(.5);
+
         ball = this.physics.add.sprite((width/2), (height/2), 'ball')
                 .setScale(.8)
                 .setName("Ball")
                 .setVelocity(this.getRandomInt(600, 800))
-                .setVelocity(0)
                 .setCollideWorldBounds(true)
                 .setCircle(76)
                 .setBounce(1);
