@@ -1,5 +1,5 @@
 // Useful vars
-let width, height, mContext, enabelColition = true, minVelocity = 700;
+let width, height, mContext, enabelColition = true, minVelocity = 900;
 
 let ball, pad1, pad2, limits = [];
 
@@ -13,6 +13,17 @@ export class Game extends Phaser.Scene {
         mContext = this;
         this._init();
         this.physics.world.setFPS(120);
+
+        /* FULLSCREEN */
+        ball.setInteractive().on('pointerdown', function() {
+            if (mContext.scale.isFullscreen) {
+                mContext.scale.stopFullscreen();
+                // On stop fulll screen
+            } else {
+                mContext.scale.startFullscreen();
+                // On start fulll screen
+            }
+        });
 
         // Drag pads
         this.input.setDraggable([pad1, pad2]);
@@ -98,6 +109,7 @@ export class Game extends Phaser.Scene {
                 .setScale(.8)
                 .setName("Ball")
                 .setVelocity(this.getRandomInt(600, 800))
+                .setVelocity(0)
                 .setCollideWorldBounds(true)
                 .setCircle(76)
                 .setBounce(1);

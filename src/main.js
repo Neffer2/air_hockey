@@ -9,7 +9,8 @@ const config = {
     height: 1080,
     parent: 'game-container',
     scale: {
-        mode: Phaser.Scale.FIT
+        mode: Phaser.Scale.FIT,
+        fullscreenTarget: 'game-container',
     },
     scene: [
         Boot,
