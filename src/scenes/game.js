@@ -1,5 +1,5 @@
 // Useful vars
-let width, height, mContext, colliders = [], collide;
+let width, height, mContext, enabelColition = true;
 
 let ball, pad1, pad2, limits = [];
 
@@ -44,19 +44,39 @@ export class Game extends Phaser.Scene {
 
             setTimeout(() => {
                 ball.body.enable = true;
+                ball.setVelocity(mContext.getRandomInt(600, 800))
             }, 800);
         }
 
-        function newCollision (ball){
-            colliders.push(collide = mContext.add.sprite(ball.x, ball.y, 'collide', 0).setScale(.5));
+        function newCollision (pad, ball){
+            /* ANIMATION */
+            let collide = mContext.physics.add.sprite(ball.x, ball.y, 'collide', 0).setScale(.5);
             collide.anims.play('collide');
+            collide.on('animationcomplete', () => {
+                collide.destroy();
+            });
 
-            setTimeout(() => {
-                if(colliders.length > 1){
-                    colliders[0].destroy();
-                    colliders.shift();
+            /* COLITION HANDLER */
+            if (enabelColition){
+                let diff = 0;
+                if (ball.x < pad.x){
+                    // Si la pelota está en la parte izquierda del sprite
+                    diff = pad.x - ball.x;
+                    ball.setVelocityX(-10 * diff);
                 }
-            }, 1000);
+                else if (ball.x > pad.x){
+                    // Si la pelota está en la parte derecha del sprite
+                    diff = ball.x -pad.x;
+                    ball.setVelocityX(10 * diff);
+                }
+                else{
+                    // La pelota golpea el centro del sprite
+                    ball.setVelocityX(2 + Math.random() * 8);
+                }
+
+                enabelColition = !enabelColition;
+                setTimeout(() => enabelColition = !enabelColition, 500);
+            }
         }
     } 
 
@@ -70,7 +90,7 @@ export class Game extends Phaser.Scene {
                 .setName("Ball")
                 .setVelocity(this.getRandomInt(600, 800))
                 .setCollideWorldBounds(true)
-                .setCircle(55.5)
+                .setCircle(76)
                 .setBounce(1);
 
         pad1 = this.physics.add.sprite((width/2), ((height) - 100), 'pad')
