@@ -48,7 +48,7 @@ export class Game extends Phaser.Scene {
             }, 800);
         }
 
-        function newCollision (pad, ball){
+        function newCollision (ball, pad){
             /* ANIMATION */
             let collide = mContext.physics.add.sprite(ball.x, ball.y, 'collide', 0).setScale(.5);
             collide.anims.play('collide');
@@ -58,7 +58,9 @@ export class Game extends Phaser.Scene {
 
             /* COLITION HANDLER */
             if (enabelColition){
+                enabelColition = !enabelColition;
                 let diff = 0;
+
                 if (ball.x < pad.x){
                     // Si la pelota está en la parte izquierda del sprite
                     diff = pad.x - ball.x;
@@ -74,9 +76,8 @@ export class Game extends Phaser.Scene {
                     ball.setVelocityX(2 + Math.random() * 8);
                 }
 
-                enabelColition = !enabelColition;
-                setTimeout(() => enabelColition = !enabelColition, 500);
-            }
+                setTimeout(() => enabelColition = !enabelColition, 100);
+            }        
         }
     } 
 
