@@ -186,8 +186,8 @@ export class Game extends Phaser.Scene {
             repeat: 0
         });
 
-        goalRedAnim = this.add.sprite((width/2), 300, 'red-goal', 0).setAlpha(0);
-        goalBlueAnim = this.add.sprite((width/2), (height - 300), 'blue-goal', 0).setAlpha(0);
+        goalRedAnim = this.add.sprite((width/2), 150, 'red-goal', 0).setAlpha(0);
+        goalBlueAnim = this.add.sprite((width/2), (height - 150), 'blue-goal', 0).setAlpha(0);
     }
 
     getRandomInt(min = 0, max){
