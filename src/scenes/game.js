@@ -175,14 +175,14 @@ export class Game extends Phaser.Scene {
         this.anims.create({
             key: 'red-goal',
             frames: this.anims.generateFrameNumbers('red-goal', { start: 0, end: 15 }),
-            frameRate: 60,
+            frameRate: 15,
             repeat: 0
         });
 
         this.anims.create({
             key: 'blue-goal',
             frames: this.anims.generateFrameNumbers('blue-goal', { start: 0, end: 15 }),
-            frameRate: 60,
+            frameRate: 15,
             repeat: 0
         });
 
