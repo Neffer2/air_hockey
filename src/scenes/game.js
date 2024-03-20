@@ -1,7 +1,7 @@
 // Useful vars
-let width, height, mContext, enabelColition = true, minVelocity = 900;
+let width, height, mContext, enabelColition = true, enabelSoundColition = true, minVelocity = 900;
 
-let ball, pad1, pad2, limits = [], fullScreen;
+let ball, pad1, pad2, limits = [], fullScreen, colitionSound = ['disk-1', 'disk-2'];
 
 export class Game extends Phaser.Scene {
     constructor ()
@@ -71,7 +71,6 @@ export class Game extends Phaser.Scene {
             if (enabelColition){
                 enabelColition = !enabelColition;
                 let diff = 0;
-
                 if (ball.x < pad.x){
                     // Si la pelota está en la parte izquierda del sprite
                     diff = pad.x - ball.x;
@@ -86,9 +85,19 @@ export class Game extends Phaser.Scene {
                     // La pelota golpea el centro del sprite
                     ball.setVelocity(50 + Math.random() * 8);
                 }
-
                 setTimeout(() => enabelColition = !enabelColition, 500);
-            }        
+            } 
+
+            /* SOUND EFFECTS */
+            if (enabelSoundColition){
+                enabelSoundColition = !enabelSoundColition;
+
+                let sound = mContext.sound.add(colitionSound[mContext.getRandomInt(0, 1)]);
+                setTimeout(() => {
+                    enabelSoundColition = !enabelSoundColition;
+                    sound.play();
+                }, 50);
+            }
         }
     } 
 
