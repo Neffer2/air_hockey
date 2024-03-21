@@ -49,7 +49,6 @@ export class Game extends Phaser.Scene {
         function goal (ball, limit){
             ball.setPosition((width/2), (height/2));
             ball.body.enable = false;
-            limit.score += 1;
             mContext.cameras.main.shake(100);
 
             if (limit.name === 'Player1'){
@@ -60,7 +59,7 @@ export class Game extends Phaser.Scene {
                 });
 
                 pad1.score++;
-                scoreTextRed.setText(pad1.score);
+                scoreTextBlue.setText(pad1.score);
             }else if (limit.name === 'Player2'){
                 goalBlueAnim.setAlpha(1);
                 goalBlueAnim.anims.play('blue-goal', true);
@@ -69,7 +68,7 @@ export class Game extends Phaser.Scene {
                 });
 
                 pad2.score++;
-                scoreTextBlue.setText(pad2.score);
+                scoreTextRed.setText(pad2.score);
             }
 
             setTimeout(() => {
