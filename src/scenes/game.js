@@ -130,7 +130,7 @@ export class Game extends Phaser.Scene {
     _init(){
         width = this.game.config.width;
         height = this.game.config.height;
-        this.add.image(width/2, height/2, 'back').setScale(1, .85);
+        this.add.image(width/2, height/2, 'back').setScale(1, 1.02);
 
         fullScreen = this.add.image(50, 50, 'fullScreen').setScale(.5);
 
