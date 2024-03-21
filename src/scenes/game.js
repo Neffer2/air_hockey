@@ -69,7 +69,7 @@ export class Game extends Phaser.Scene {
                 });
 
                 pad2.score++;
-                scoreTextRed.setText(pad2.score);
+                scoreTextBlue.setText(pad2.score);
             }
 
             setTimeout(() => {
