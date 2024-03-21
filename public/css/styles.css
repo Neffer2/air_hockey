@@ -9,11 +9,11 @@ html, body {
 }
 
 body {
-    background-color: #fff;
+    background-color: #000;
 }
 
 canvas {
-    height: 90% !important;
+    height: 100% !important;
     width: 100% !important;
 }
 
