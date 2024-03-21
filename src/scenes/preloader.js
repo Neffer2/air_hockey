@@ -28,7 +28,8 @@ export class Preloader extends Phaser.Scene {
         this.load.setPath('public/assets');
         this.load.image('ball', 'ball.png');
         this.load.image('fullScreen', 'pad_.png');
-        this.load.image('pad', 'pad.png');
+        this.load.image('blue-pad', 'blue-pad.png');
+        this.load.image('red-pad', 'red-pad.png');
         this.load.image('back', 'fondo.png');    
         this.load.audio('disk-1', 'sounds/disk_1.wav');
         this.load.audio('disk-2', 'sounds/disk_2.wav');

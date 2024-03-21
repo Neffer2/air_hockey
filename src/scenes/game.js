@@ -1,7 +1,7 @@
 // Useful vars
-let width, height, mContext, enabelColition = true, enabelSoundColition = true, minVelocity = 900;
+let width, height, mContext, enabelColition = true, enabelSoundColition = true, minVelocity = 1000;
 
-let ball, pad1, pad2, limits = [], fullScreen, colitionSound = ['disk-1', 'disk-2'], goalRedAnim, goalBlueAnim;
+let ball, pad1, pad2, limits = [], fullScreen, colitionSound = ['disk-1', 'disk-2'], goalRedAnim, goalBlueAnim, scoreTextBlue, scoreTextRed;
 
 export class Game extends Phaser.Scene {
     constructor ()
@@ -58,15 +58,19 @@ export class Game extends Phaser.Scene {
                 goalRedAnim.on('animationcomplete', () => {
                     goalRedAnim.setAlpha(0);
                 });
+
+                pad1.score++;
+                scoreTextRed.setText(pad1.score);
             }else if (limit.name === 'Player2'){
                 goalBlueAnim.setAlpha(1);
                 goalBlueAnim.anims.play('blue-goal', true);
                 goalBlueAnim.on('animationcomplete', () => {
                     goalBlueAnim.setAlpha(0);
                 });
-            }
 
-            console.log(limit.name+" score: "+limit.score)
+                pad2.score++;
+                scoreTextRed.setText(pad2.score);
+            }
 
             setTimeout(() => {
                 ball.body.enable = true;
@@ -139,21 +143,23 @@ export class Game extends Phaser.Scene {
                 .setCircle(76)
                 .setBounce(1);
 
-        pad1 = this.physics.add.sprite((width/2), ((height) - 100), 'pad')
+        pad1 = this.physics.add.sprite((width/2), ((height) - 100), 'blue-pad')
                 .setScale(.8)
                 .setName("Pad1")
                 .setCircle(93.5)
                 .setImmovable(true)
                 .setInteractive()
                 .setCollideWorldBounds(true);
+        pad1.score = 0;
 
-        pad2 = this.physics.add.sprite((width/2), 100, 'pad').
+        pad2 = this.physics.add.sprite((width/2), 100, 'red-pad').
                 setScale(.8)
                 .setName("Pad2")
                 .setCircle(93.5)
                 .setImmovable(true)
                 .setInteractive()
                 .setCollideWorldBounds(true);
+        pad2.score = 0;
 
         limits.push(this.add.rectangle((width/2), 0, (width/5), 10, 0x6666ff).setName("Player1"));
         limits.push(this.add.rectangle((width/2), height, (width/5), 10, 0x6666ff).setName("Player2"));
@@ -163,6 +169,12 @@ export class Game extends Phaser.Scene {
             this.physics.add.existing(limit, true);
             limit.setAlpha(0);
         });
+
+        scoreTextRed = this.add.text((width - 100), (height/2) - 120, pad2.score, { font: '64px Georgia' });
+        scoreTextRed.setTint(0xff0000);
+
+        scoreTextBlue = this.add.text((width - 100), (height/2) + 60, pad1.score, { font: '64px Georgia' });
+        scoreTextBlue.setTint(0x4deeea);
 
         /* ANIMS */
         this.anims.create({
