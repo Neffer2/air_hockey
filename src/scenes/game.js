@@ -1,7 +1,7 @@
 // Useful vars
-let width, height, mContext, enabelColition = true, enabelSoundColition = true, minVelocity = 1000;
+let width, height, mContext, enabelColition = true, enabelSoundColition = true, minVelocity = 1200;
 
-let ball, pad1, pad2, limits = [], fullScreen, colitionSound = ['disk-1', 'disk-2'], goalRedAnim, goalBlueAnim, scoreTextBlue, scoreTextRed;
+let ball, pad1, pad2, limits = [], fullScreen, colitionSound = ['disk-1', 'disk-2'], goalRedAnim, goalBlueAnim, ballResetAnim, scoreTextBlue, scoreTextRed;
 
 export class Game extends Phaser.Scene {
     constructor ()
@@ -47,6 +47,9 @@ export class Game extends Phaser.Scene {
         this.physics.add.collider(ball, limits, goal);
 
         function goal (ball, limit){
+            ballResetAnim.setAlpha(1);
+            ballResetAnim.anims.play('disk-reset', true);
+
             ball.setPosition((width/2), (height/2));
             ball.body.enable = false;
             mContext.cameras.main.shake(100);
@@ -59,6 +62,7 @@ export class Game extends Phaser.Scene {
                 });
 
                 pad1.score++;
+                if (pad1.score > 9){mContext.scene.restart();}
                 scoreTextBlue.setText(pad1.score);
             }else if (limit.name === 'Player2'){
                 goalBlueAnim.setAlpha(1);
@@ -68,13 +72,15 @@ export class Game extends Phaser.Scene {
                 });
 
                 pad2.score++;
+                if (pad2.score > 9){mContext.scene.restart();}
                 scoreTextRed.setText(pad2.score);
             }
 
-            setTimeout(() => {
+            ballResetAnim.on('animationcomplete', () => {
                 ball.body.enable = true;
-                ball.setVelocity(mContext.getRandomInt(600, 800))
-            }, 800);
+                ball.setVelocity(mContext.getRandomInt(-minVelocity, minVelocity))
+                ballResetAnim.setAlpha(0);
+            });
         }
 
         function newCollision (ball, pad){
@@ -135,9 +141,9 @@ export class Game extends Phaser.Scene {
         fullScreen = this.add.image(50, 50, 'fullScreen').setScale(.5);
 
         ball = this.physics.add.sprite((width/2), (height/2), 'ball')
-                .setScale(.8)
+                .setScale(.70)
                 .setName("Ball")
-                .setVelocity(this.getRandomInt(600, 800))
+                .setVelocity(this.getRandomInt(-minVelocity, minVelocity))
                 .setCollideWorldBounds(true)
                 .setCircle(76)
                 .setBounce(1);
@@ -177,6 +183,13 @@ export class Game extends Phaser.Scene {
 
         /* ANIMS */
         this.anims.create({
+            key: 'disk-reset',
+            frames: this.anims.generateFrameNumbers('disk-reset', { start: 0, end: 35 }),
+            frameRate: 30,
+            repeat: 0
+        });
+
+        this.anims.create({
             key: 'collide',
             frames: this.anims.generateFrameNumbers('collide', { start: 0, end: 15 }),
             frameRate: 60,
@@ -199,6 +212,7 @@ export class Game extends Phaser.Scene {
 
         goalRedAnim = this.add.sprite((width/2), 150, 'red-goal', 0).setAlpha(0);
         goalBlueAnim = this.add.sprite((width/2), (height - 150), 'blue-goal', 0).setAlpha(0);
+        ballResetAnim = this.physics.add.sprite((width/2), (height/2), 'disk-reset', 0).setScale(.3).setAlpha(0);
     }
 
     getRandomInt(min = 0, max){

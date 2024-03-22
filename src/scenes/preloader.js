@@ -36,6 +36,7 @@ export class Preloader extends Phaser.Scene {
         this.load.spritesheet('collide', 'CrashSpriteSheet.png', { frameWidth: 625, frameHeight: 468.75 });
         this.load.spritesheet('red-goal', 'red-goal-compressedx2.png', { frameWidth: 552.25, frameHeight: 552.25 });
         this.load.spritesheet('blue-goal', 'blue-goal-compressedx2.png', { frameWidth: 552.25, frameHeight: 552.25 });
+        this.load.spritesheet('disk-reset', 'disk-reset.png', { frameWidth: 406.25, frameHeight: 406.33 });
     }
 
     create ()
