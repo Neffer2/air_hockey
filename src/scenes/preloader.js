@@ -27,12 +27,15 @@ export class Preloader extends Phaser.Scene {
     {
         this.load.setPath('public/assets');
         this.load.image('ball', 'ball.png');
-        this.load.image('fullScreen', 'pad_.png');
+        this.load.image('fullScreen-on', 'fullscreen-on.png');
+        this.load.image('fullScreen-off', 'fullscreen-off.png');
         this.load.image('blue-pad', 'blue-pad.png');
         this.load.image('red-pad', 'red-pad.png');
         this.load.image('back', 'fondo.png');    
         this.load.audio('disk-1', 'sounds/disk_1.wav');
         this.load.audio('disk-2', 'sounds/disk_2.wav');
+        this.load.audio('goal', 'sounds/goal.wav');
+        this.load.audio('background-music', 'sounds/background.mp3');
         this.load.spritesheet('collide', 'CrashSpriteSheet.png', { frameWidth: 625, frameHeight: 468.75 });
         this.load.spritesheet('red-goal', 'red-goal-compressedx2.png', { frameWidth: 552.25, frameHeight: 552.25 });
         this.load.spritesheet('blue-goal', 'blue-goal-compressedx2.png', { frameWidth: 552.25, frameHeight: 552.25 });

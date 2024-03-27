@@ -1,7 +1,7 @@
 // Useful vars
 let width, height, mContext, enabelColition = true, enabelSoundColition = true, minVelocity = 1200;
 
-let ball, pad1, pad2, limits = [], fullScreen, colitionSound = ['disk-1', 'disk-2'], goalRedAnim, goalBlueAnim, ballResetAnim, scoreTextBlue, scoreTextRed;
+let ball, pad1, pad2, limits = [], fullScreen, colitionSound = ['disk-1', 'disk-2'], goalRedAnim, goalBlueAnim, ballResetAnim, scoreTextBlue, scoreTextRed, goalSound, backgroundMusic;
 
 export class Game extends Phaser.Scene {
     constructor ()
@@ -18,9 +18,11 @@ export class Game extends Phaser.Scene {
         fullScreen.setInteractive().on('pointerdown', function() {
             if (mContext.scale.isFullscreen) {
                 mContext.scale.stopFullscreen();
-                // On stop fulll screen
+                fullScreen.setTexture('fullScreen-on');
+                // On full screen off
             } else {
                 mContext.scale.startFullscreen();
+                fullScreen.setTexture('fullScreen-off');
                 // On start fulll screen
             }
         });
@@ -47,6 +49,7 @@ export class Game extends Phaser.Scene {
         this.physics.add.collider(ball, limits, goal);
 
         function goal (ball, limit){
+            goalSound.play();
             ballResetAnim.setAlpha(1);
             ballResetAnim.anims.play('disk-reset', true);
 
@@ -138,7 +141,7 @@ export class Game extends Phaser.Scene {
         height = this.game.config.height;
         this.add.image(width/2, height/2, 'back').setScale(1, 1.02);
 
-        fullScreen = this.add.image(50, 50, 'fullScreen').setScale(.5);
+        fullScreen = this.add.image(50, 50, 'fullScreen-on').setScale(.6); 
 
         ball = this.physics.add.sprite((width/2), (height/2), 'ball')
                 .setScale(.70)
@@ -175,17 +178,17 @@ export class Game extends Phaser.Scene {
             limit.setAlpha(0);
         });
 
-        scoreTextRed = this.add.text((width - 100), (height/2) - 120, pad2.score, { font: '64px Georgia' });
+        scoreTextRed = this.add.text((width - 100), (height/2) - 120, pad2.score, { font: '64px neon' });
         scoreTextRed.setTint(0xff0000);
 
-        scoreTextBlue = this.add.text((width - 100), (height/2) + 60, pad1.score, { font: '64px Georgia' });
+        scoreTextBlue = this.add.text((width - 100), (height/2) + 60, pad1.score, { font: '64px neon' });
         scoreTextBlue.setTint(0x4deeea);
 
         /* ANIMS */
         this.anims.create({
             key: 'disk-reset',
             frames: this.anims.generateFrameNumbers('disk-reset', { start: 0, end: 35 }),
-            frameRate: 30,
+            frameRate: 20,
             repeat: 0
         });
 
@@ -213,6 +216,13 @@ export class Game extends Phaser.Scene {
         goalRedAnim = this.add.sprite((width/2), 150, 'red-goal', 0).setAlpha(0);
         goalBlueAnim = this.add.sprite((width/2), (height - 150), 'blue-goal', 0).setAlpha(0);
         ballResetAnim = this.physics.add.sprite((width/2), (height/2), 'disk-reset', 0).setScale(.3).setAlpha(0);
+
+        goalSound = this.sound.add('goal');
+        goalSound.setVolume(0.2);
+
+        backgroundMusic = this.sound.add('background-music');
+        backgroundMusic.setVolume(.4);
+        backgroundMusic.play();
     }
 
     getRandomInt(min = 0, max){
