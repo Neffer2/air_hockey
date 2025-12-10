@@ -1,7 +1,11 @@
 // Useful vars
-let width, height, mContext, enabelColition = true, enabelSoundColition = true, minVelocity = 1200;
+let width, height, mContext, enabelColition = true, enabelSoundColition = true, minVelocity = 1200, aiSpeed = 700;
 
 let ball, pad1, pad2, limits = [], fullScreen, colitionSound = ['disk-1', 'disk-2'], goalRedAnim, goalBlueAnim, ballResetAnim, scoreTextBlue, scoreTextRed, goalSound, backgroundMusic;
+
+// Collision detection for ball reset
+let collisionCount = 0;
+let collisionTimer = 0;
 
 export class Game extends Phaser.Scene {
     constructor ()
@@ -27,12 +31,10 @@ export class Game extends Phaser.Scene {
             }
         });
 
-        // Drag pads
-        this.input.setDraggable([pad1, pad2]);
+        // Drag pads (only player pad)
+        this.input.setDraggable([pad1]);
         this.input.on('drag', (pointer, obj, dragX, dragY) => {
             if(obj.name === "Pad1" && dragY > height/2){
-                obj.setPosition(dragX, dragY);
-            }else if(obj.name === "Pad2" && dragY < ((this.game.config.height)/2)){
                 obj.setPosition(dragX, dragY);
             }
         });
@@ -87,6 +89,18 @@ export class Game extends Phaser.Scene {
         }
 
         function newCollision (ball, pad){
+            // Count collisions for anti-spam detection
+            collisionCount++;
+            collisionTimer = mContext.time.now;
+            
+            // Reset ball if too many collisions in short time
+            if (collisionCount >= 100) {
+                ball.setPosition((width/2), (height/2));
+                ball.setVelocity(mContext.getRandomInt(-minVelocity, minVelocity), mContext.getRandomInt(-minVelocity/2, minVelocity/2));
+                collisionCount = 0;
+                return; // Skip normal collision handling
+            }
+
             /* ANIMATION */
             let collide = mContext.physics.add.sprite(ball.x, ball.y, 'collide', 0).setScale(.5);
             collide.anims.play('collide');
@@ -129,10 +143,57 @@ export class Game extends Phaser.Scene {
     } 
 
     update(){
+        // Reset collision counter every 5 seconds
+        if (mContext.time.now - collisionTimer > 5000) {
+            collisionCount = 0;
+        }
+
         if ((ball.body.velocity.y > 0) && ball.body.velocity.y < minVelocity){
             ball.setVelocityY(minVelocity);
         }else if ((ball.body.velocity.y < 0) && (ball.body.velocity.y * -1) < minVelocity){
             ball.setVelocity(-minVelocity);
+        }
+
+        // Simple AI for pad2 (machine opponent)
+        if (pad2 && pad2.body) {
+            const r = pad2.body.halfWidth || 0;
+            let targetX = Phaser.Math.Clamp(ball.x, r, width - r);
+            let targetY = Math.min(ball.y, (height / 2) - r);
+
+            // If ball is disabled (e.g., during reset), hover near start position
+            if (!ball.body.enable) {
+                targetX = width / 2;
+                targetY = 100;
+            }
+
+            const dx = targetX - pad2.x;
+            const dy = targetY - pad2.y;
+            const dist = Math.hypot(dx, dy);
+
+            // Increased dead zone to prevent vibration
+            const deadZone = 15;
+            
+            if (dist > deadZone) {
+                // Smooth movement with deceleration near target
+                const speedFactor = Math.min(1, dist / 100);
+                const currentSpeed = aiSpeed * speedFactor;
+                
+                const vx = (dx / dist) * currentSpeed;
+                const vy = (dy / dist) * currentSpeed;
+                pad2.setVelocity(vx, vy);
+            } else {
+                // Completely stop when within dead zone
+                pad2.setVelocity(0, 0);
+            }
+
+            // Enforce top-half bounds
+            const clampedX = Phaser.Math.Clamp(pad2.x, r, width - r);
+            const clampedY = Phaser.Math.Clamp(pad2.y, r, (height / 2) - r);
+            if (clampedX !== pad2.x || clampedY !== pad2.y) {
+                pad2.setPosition(clampedX, clampedY);
+                // Stop movement when hitting bounds to prevent vibration
+                pad2.setVelocity(0, 0);
+            }
         }
     }
 
@@ -220,9 +281,9 @@ export class Game extends Phaser.Scene {
         goalSound = this.sound.add('goal');
         goalSound.setVolume(0.2);
 
-        backgroundMusic = this.sound.add('background-music');
-        backgroundMusic.setVolume(.4);
-        backgroundMusic.play();
+        // backgroundMusic = this.sound.add('background-music');
+        // backgroundMusic.setVolume(.4);
+        // backgroundMusic.play();
     }
 
     getRandomInt(min = 0, max){
